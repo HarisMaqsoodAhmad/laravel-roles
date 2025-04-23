@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -24,7 +25,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        // Get all roles
+        $roles = Role::all();
+
+        // Show the form to create a new user
+        return view('users.create', compact('roles'));
     }
 
     /**
@@ -45,6 +50,11 @@ class UserController extends Controller
             'email'    => $validatedData['email'],
             'password' => bcrypt($validatedData['password']), // Hash the password
         ]);
+
+        // Assign roles to the user
+        if ($request->has('roles')) {
+            $user->assignRole($request->input('roles'));
+        }
 
         // Redirect to the users index page with a success message
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -67,7 +77,10 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        // Get all roles
+        $roles = Role::all();
+
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -92,8 +105,15 @@ class UserController extends Controller
         }
         $user->save();
 
+        // Sync roles with the user
+        if ($request->has('roles')) {
+            $user->syncRoles($request->input('roles'));
+        } else {
+            $user->syncRoles([]);
+        }
+
         // Redirect to the users index page with a success message
-        return redirect()->route('users.edit', $id)->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     /**

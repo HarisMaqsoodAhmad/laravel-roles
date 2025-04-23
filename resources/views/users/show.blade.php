@@ -15,8 +15,18 @@
                         <div>
                             <h4>Name: {{ $user->name }}</h4>
                             <p>Email: {{ $user->email }}</p>
-                        </div>
 
+                            @if ($user->roles->isNotEmpty())
+                                <h5>User Roles</h5>
+                                <ul>
+                                    @foreach ($user->roles as $role)
+                                        <li class="mb-1">
+                                            {{ $role->name }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
