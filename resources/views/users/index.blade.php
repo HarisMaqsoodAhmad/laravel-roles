@@ -31,7 +31,8 @@
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
-                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->name }}
+                                            {!! Auth::user()->id == $user->id ? '<small><b>(Current)</b></small>' : '' !!}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
                                             @if ($user->roles->isNotEmpty())

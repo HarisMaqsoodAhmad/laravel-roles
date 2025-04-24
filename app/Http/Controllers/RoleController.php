@@ -8,6 +8,20 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+/**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // Apply middleware to all methods in this controller:
+        $this->middleware(['permission:role-create'], ['only' => ['create', 'store']]);
+        $this->middleware(['permission:role-edit'], ['only' => ['edit', 'update']]);
+        $this->middleware(['permission:role-delete'], ['only' => ['destroy']]);
+        $this->middleware(['permission:role-list'], ['only' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
